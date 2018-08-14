@@ -588,6 +588,36 @@ double kicker_total(Player player,Kicker k){
 	return value;
 }
 
+void add_player(Offense o, Defense d, Kicker k){
+	while(1){
+		string name;
+		char odk;
+		cout<<"Enter name of player, team defense, or kicker. Type 'Q' to quit\n";
+		cin>>name;
+		if(name == "Q") return;
+		cout<<"Specify whether this player is on offense (type 'O'), defense (type 'D'), or kicker (type 'K'):\n";
+		cin>>odk;
+		if(odk == 'O'){
+			Player offense(name, o);
+			offense.player_prompt(true,false);
+			offense.print_player_info(true,false);
+			cout<<name<<"'s total fantasy points: "<<offense_total(offense,o)<<"\n";
+		}
+		else if(odk == 'D'){
+			Player defense(name, d);
+			defense.player_prompt(false,false);
+			defense.print_player_info(false,false);
+			cout<<name<<"'s total fantasy points: "<<defense_total(defense,d)<<"\n";
+		}
+		else if(odk == 'K'){
+			Player kicker(name, k);
+			kicker.player_prompt(false,true);
+			kicker.print_player_info(false,true);
+			cout<<name<<"'s total fantasy points: "<<kicker_total(kicker,k)<<"\n";
+		}
+	}
+}
+
 int main(){
 	Offense o;
 	o.prompt();
@@ -601,35 +631,7 @@ int main(){
 	k.prompt();
 	k.print_all_categories();
 	
-	string brady = "TomBrady2007";
-	Player tom_brady(brady, o);
-	tom_brady.player_prompt(true,false);
-	tom_brady.print_player_info(true,false);
-	cout<<brady<<"'s total fantasy points: "<<offense_total(tom_brady,o)<<"\n";
-	
-	string lynch = "MarshawnLynch2012";
-	Player marshawn_lynch(lynch, o);
-	marshawn_lynch.player_prompt(true,false);
-	marshawn_lynch.print_player_info(true,false);
-	cout<<lynch<<"'s total fantasy points: "<<offense_total(marshawn_lynch,o)<<"\n";
-	
-	string gronk = "RobGronkowski2011";
-	Player rob_gronkowski(gronk, o);
-	rob_gronkowski.player_prompt(true,false);
-	rob_gronkowski.print_player_info(true,false);
-	cout<<gronk<<"'s total fantasy points: "<<offense_total(rob_gronkowski,o)<<"\n";
-	
-	string bears85 = "ChicagoBears1985";
-	Player chicago_bears_85(bears85, d);
-	chicago_bears_85.player_prompt(false,false);
-	chicago_bears_85.print_player_info(false,false);
-	cout<<bears85<<"'s ESTIMATED total fantasy points: "<<defense_total(chicago_bears_85,d)<<"\n";
-	
-	string akers = "DavidAkers2011";
-	Player david_akers(akers, k);
-	david_akers.player_prompt(false,true);
-	david_akers.print_player_info(false,true);
-	cout<<akers<<"'s total fantasy points: "<<kicker_total(david_akers,k)<<"\n";
+	add_player(o,d,k);
 	
 	return 0;
 }
