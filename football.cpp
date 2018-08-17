@@ -2,6 +2,7 @@
 #include<cstdlib>
 #include<vector>
 #include<string>
+#include<limits>
 
 using namespace std;
 
@@ -42,9 +43,12 @@ class Offense{
 			while(1){
 				string cat;
 				double cat_value;
-				cout<<"Add a valid non-K/DEF category (4 char limit, UPPERCASE), and its point value. Type Q 0 when finished\n";
-				cin>>cat;
-				cin>>cat_value;
+				while((cout<<"Add a valid non-K/DEF category (4 char limit, UPPERCASE), and its point value. Type Q 0 when finished\n")
+					&& (!(cin>>cat) || !(cin>>cat_value))){
+					cout<<"Invalid input!\n";
+					cin.clear();
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				}
 				if (cat == "Q" && cat_value == 0) break;
 				else if(cat == "Q" && cat_value != 0){
 					cout<<"Invalid quit command! Type Q 0\n";
@@ -196,9 +200,12 @@ class Defense{
 			while(1){
 				string cat;
 				double cat_value;
-				cout<<"Add a valid DEF/ST stat (4 letters max, UPPERCASE), type Q 0 when finished\n";
-				cin>>cat;
-				cin>>cat_value;
+				while((cout<<"Add a valid DEF/ST stat (4 letters max, UPPERCASE), type Q 0 when finished\n")
+					&& (!(cin>>cat) || !(cin>>cat_value))){
+					cout<<"Invalid input!\n";
+					cin.clear();
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				}
 				if (cat == "Q" && cat_value == 0) break;
 				else if(cat == "Q" && cat_value != 0){
 					cout<<"Invalid quit command! Type Q 0\n";
@@ -354,9 +361,12 @@ class Kicker{
 			while(1){
 				string cat;
 				double cat_value;
-				cout<<"Add a valid kicking stat (4 letters max, UPPERCASE), type Q 0 when finished\n";
-				cin>>cat;
-				cin>>cat_value;
+				while((cout<<"Add a valid kicking stat (4 letters max, UPPERCASE), type Q 0 when finished\n")
+					&& (!(cin>>cat) || !(cin>>cat_value))){
+					cout<<"Invalid input!\n";
+					cin.clear();
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				}
 				if (cat == "Q" && cat_value == 0) break;
 				else if(cat == "Q" && cat_value != 0){
 					cout<<"Invalid quit command! Type Q 0\n";
@@ -590,31 +600,49 @@ double kicker_total(Player player,Kicker k){
 
 void add_player(Offense o, Defense d, Kicker k){
 	while(1){
-		string name;
+		string first_name;
+		string last_name;
 		char odk;
-		cout<<"Enter name of player, team defense, or kicker. Type 'Q' to quit\n";
-		cin>>name;
-		if(name == "Q") return;
-		cout<<"Specify whether this player is on offense (type 'O'), defense (type 'D'), or kicker (type 'K'):\n";
-		cin>>odk;
-		if(odk == 'O'){
-			Player offense(name, o);
-			offense.player_prompt(true,false);
-			offense.print_player_info(true,false);
-			cout<<name<<"'s total fantasy points: "<<offense_total(offense,o)<<"\n";
-		}
-		else if(odk == 'D'){
-			Player defense(name, d);
-			defense.player_prompt(false,false);
-			defense.print_player_info(false,false);
-			cout<<name<<"'s total fantasy points: "<<defense_total(defense,d)<<"\n";
-		}
-		else if(odk == 'K'){
-			Player kicker(name, k);
-			kicker.player_prompt(false,true);
-			kicker.print_player_info(false,true);
-			cout<<name<<"'s total fantasy points: "<<kicker_total(kicker,k)<<"\n";
-		}
+		start:
+			while((cout<<"Enter first name and last name of player, team defense, or kicker. Type 'Q Q' to quit\n") && (!(cin>>first_name) || !(cin>>last_name))){
+				cout<<"Invalid input!\n";
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			}
+			if(first_name == "Q" && last_name == "Q") return;
+			else if ((first_name == "Q" && last_name != "Q") || (first_name != "Q" && last_name == "Q")){
+				cout<<"Incorrect attempt at quitting the program! Type 'Q Q' to successfully quit the program.\n";
+				goto start;
+			}
+		middle:
+			while((cout<<"Specify whether this player is on offense (type 'O'), defense (type 'D'), or kicker (type 'K'):\n") && !(cin>>odk)){
+				cout<<"Invalid input!\n";
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				goto middle;
+			}		
+			if(odk == 'O'){
+				Player offense(first_name+" "+last_name, o);
+				offense.player_prompt(true,false);
+				offense.print_player_info(true,false);
+				cout<<first_name+" "+last_name<<"'s total fantasy points: "<<offense_total(offense,o)<<"\n";
+			}
+			else if(odk == 'D'){
+				Player defense(first_name+" "+last_name, d);
+				defense.player_prompt(false,false);
+				defense.print_player_info(false,false);
+				cout<<first_name+" "+last_name<<"'s total fantasy points: "<<defense_total(defense,d)<<"\n";
+			}
+			else if(odk == 'K'){
+				Player kicker(first_name+" "+last_name, k);
+				kicker.player_prompt(false,true);
+				kicker.print_player_info(false,true);
+				cout<<first_name+" "+last_name<<"'s total fantasy points: "<<kicker_total(kicker,k)<<"\n";
+			}
+			else{
+				cout<<"Invalid input! Type O, D, or K when prompted!\n";
+				goto middle;
+			}
 	}
 }
 
