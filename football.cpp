@@ -18,13 +18,13 @@ class Offense{
 				    categories[i].first == "PASS" || cat == "PASS" && categories[i].first == "PYDS" || cat == "TD" && categories[i].first == "TDS" || cat == "TDS" &&
 					categories[i].first == "TD" || cat == "INT" && categories[i].first == "INTS" || cat == "INTS" && categories[i].first == "INT" || cat == "TWO" &&
 					categories[i].first == "2PT" || cat == "2PT" && categories[i].first == "TWO" || cat == "PTDS" && categories[i].first == "PTD" || cat == "PTD" &&
-					categories[i].first == "PTDS"){
+					categories[i].first == "PTDS" || cat == "REC" && categories[i].first == "RECS" || cat == "RECS" && categories[i].first == "REC"){
 						cout<< "You've already entered that category!\n";
 						return;
 				}
 			}
 			if(cat == "PYDS" || cat == "PASS" || cat == "RUSH" || cat == "RECY" || cat == "TD" || cat == "TDS" || cat == "TWO" || cat == "2PT" || cat == "PTD" || 
-			   cat == "PTDS" || cat == "INT" || cat == "INTS" || cat == "FUM" || cat == "FL" || cat == "REC"){
+			   cat == "PTDS" || cat == "INT" || cat == "INTS" || cat == "FUM" || cat == "FL" || cat == "REC" || cat == "RECS"){
 				categories.push_back(make_pair(cat,val));
 			}
 			else if(cat == "RYDS" || cat== "YDS"){
@@ -38,12 +38,12 @@ class Offense{
 			}
 		}
 		void prompt(){
-			cout<<"Add a valid non-K/DEF football category (4 char limit, UPPERCASE), and its point value. Type Q 0 when finished\n";
+			cout<<"Add a valid non-K/DEF football category (4 char limit, UPPERCASE), and its point value. Type LIST 0 to see all categories. Type Q 0 when finished\n";
 			cout<<"Example: PASS 0.04\n"; 
 			while(1){
 				string cat;
 				double cat_value;
-				while((cout<<"Add a valid non-K/DEF category (4 char limit, UPPERCASE), and its point value. Type Q 0 when finished\n")
+				while((cout<<"Add a valid non-K/DEF category (4 char limit, UPPERCASE), and its point value. Type LIST 0 to see all categories. Type Q 0 when finished\n")
 					&& (!(cin>>cat) || !(cin>>cat_value))){
 					cout<<"Invalid input!\n";
 					cin.clear();
@@ -52,6 +52,20 @@ class Offense{
 				if (cat == "Q" && cat_value == 0) break;
 				else if(cat == "Q" && cat_value != 0){
 					cout<<"Invalid quit command! Type Q 0\n";
+				}
+				else if(cat == "LIST" && cat_value == 0){
+					cout<<"Passing Yards: PASS, PYDS\n";
+					cout<<"Passing Touchdowns: PTD, PTDS\n";
+					cout<<"Interceptions: INT, INTS\n";
+					cout<<"Rushing Yards: RUSH\n";
+					cout<<"Receiving Yards: RECY\n";
+					cout<<"Receptions: REC, RECS\n";
+					cout<<"Touchdowns: TD, TDS\n";
+					cout<<"Fumbles/Fumbles Lost: FUM, FL\n";
+					cout<<"Two-Point Conversions: 2PT, TWO\n";
+				}
+				else if(cat == "LIST" && cat_value != 0){
+					cout<<"Invalid LIST command! Type LIST 0\n";
 				}
 				else if (cat.length() <= 4){
 					add_offense(cat,cat_value);
@@ -118,6 +132,12 @@ class Offense{
 					categories[count].second = cats[i].second;
 					++count;
 					cout<<"  "<<cats[i].first;
+				}
+				if(cats[i].first == "RECS"){
+					categories[count].first = cats[i].first;
+					categories[count].second = cats[i].second;
+					++count;
+					cout<<" "<<cats[i].first;
 				}
 			}
 			for(int i= 0; i<cats.size(); i++){
@@ -194,13 +214,13 @@ class Defense{
 			}
 		}
 		void prompt(){
-			cout<<"Add a valid DEF/ST stat (4 letters max, UPPERCASE), and its point value. Type Q 0 when finished\n";
+			cout<<"Add a valid DEF/ST stat (4 letters max, UPPERCASE), and its point value. Type LIST 0 to see all categories. Type Q 0 when finished\n";
 			cout<<"Example (return touchdown(s)): RTD 6\n"; 
 			cout<<"For points allowed (PA), enter 0 as a point value. The program will ROUGHLY estimate this value\n"; 
 			while(1){
 				string cat;
 				double cat_value;
-				while((cout<<"Add a valid DEF/ST stat (4 letters max, UPPERCASE), type Q 0 when finished\n")
+				while((cout<<"Add a valid DEF/ST stat (4 letters max, UPPERCASE). Type LIST 0 to see all categories. Type Q 0 when finished\n")
 					&& (!(cin>>cat) || !(cin>>cat_value))){
 					cout<<"Invalid input!\n";
 					cin.clear();
@@ -212,6 +232,20 @@ class Defense{
 				}
 				else if (cat == "PA" && cat_value != 0){
 					cout<<"Points allowed (PA) must have 0 as its point value\n";
+				}
+				else if(cat == "LIST" && cat_value == 0){
+					cout<<"Points Allowed: PA\n";
+					cout<<"Fumbles: FUM, FR\n";
+					cout<<"Sacks: SACK\n";
+					cout<<"Interceptions: INT, INTS\n";
+					cout<<"Touchdowns: TD, TDS\n";
+					cout<<"Safeties: SAFE, SFTY, S\n";
+					cout<<"Blocked Kicks: BLK\n";
+					cout<<"Return Touchdowns: RTD, RTDS\n";
+					cout<<"Extra Points/Two-Point Conversions Returned: XPR\n";
+				}
+				else if(cat == "LIST" && cat_value != 0){
+					cout<<"Invalid LIST command! Type LIST 0\n";
 				}
 				else if (cat.length() <= 4){
 					add_defense(cat,cat_value);
@@ -342,12 +376,14 @@ class Kicker{
 			string cat = category;
 			double val = value;
 			for (int i= 0; i<categories.size(); i++){
-				if (cat == categories[i].first || cat == "50+" && categories[i].first == "FG50" || cat == "FG50" && categories[i].first == "50+"){
+			if (cat == categories[i].first || cat == "50+" && categories[i].first == "FG50" || cat == "FG50" && categories[i].first == "50+" || cat == "PAT" &&
+				categories[i].first == "XP" || cat == "PAT" && categories[i].first == "XTRA" || cat == "XP" && categories[i].first == "PAT" || cat == "XTRA" &&
+				categories[i].first == "PAT" || cat == "XTRA" && categories[i].first == "XP" || cat == "XP" && categories[i].first == "XTRA"){
 						cout<< "You've already entered that category!\n";
 						return;
 				}
 			}
-			if(cat == "FG19" || cat == "FG29" || cat == "FG39" || cat == "FG49" || cat == "FG50" || cat == "50+" || cat == "PAT"){ 
+			if(cat == "FG19" || cat == "FG29" || cat == "FG39" || cat == "FG49" || cat == "FG50" || cat == "50+" || cat == "PAT" || cat == "XTRA" || cat == "XP"){ 
 				categories.push_back(make_pair(cat,val));
 			}
 			else {
@@ -355,13 +391,13 @@ class Kicker{
 			}
 		}
 		void prompt(){
-			cout<<"Add a kicking stat (4 letters max, UPPERCASE), and its point value. Type Q 0 when finished\n";
+			cout<<"Add a kicking stat (4 letters max, UPPERCASE), and its point value. Type LIST 0 to view all categories. Type Q 0 when finished\n";
 			cout<<"Example (0 to 19 yard FG): FG19 3\n";
 			cout<<"For a FG range, take the largest possible number for the range as seen above\n";
 			while(1){
 				string cat;
 				double cat_value;
-				while((cout<<"Add a valid kicking stat (4 letters max, UPPERCASE), type Q 0 when finished\n")
+				while((cout<<"Add a valid kicking stat (4 letters max, UPPERCASE). Type LIST 0 to see all categories. Type Q 0 when finished\n")
 					&& (!(cin>>cat) || !(cin>>cat_value))){
 					cout<<"Invalid input!\n";
 					cin.clear();
@@ -370,6 +406,17 @@ class Kicker{
 				if (cat == "Q" && cat_value == 0) break;
 				else if(cat == "Q" && cat_value != 0){
 					cout<<"Invalid quit command! Type Q 0\n";
+				}
+				else if(cat == "LIST" && cat_value == 0){
+					cout<<"0-19 Yard Field Goal: FG19\n";					
+					cout<<"20-29 Yard Field Goal: FG29\n";
+					cout<<"30-39 Yard Field Goal: FG39\n";
+					cout<<"40-49 Yard Field Goal: FG49\n";
+					cout<<"50+ Yard Field Goal: FG50, 50+\n";
+					cout<<"Point After Touchdown/Extra Point: PAT, XTRA\n";
+				}
+				else if(cat == "LIST" && cat_value != 0){
+					cout<<"Invalid LIST command! Type LIST 0\n";
 				}
 				else if (cat.length() <= 4){
 					add_kicker(cat,cat_value);
@@ -438,6 +485,18 @@ class Kicker{
 					categories[count].second = cats[i].second;
 					++count;
 					cout<<"  "<<cats[i].first;
+				}
+				if(cats[i].first == "XTRA"){
+					categories[count].first = cats[i].first;
+					categories[count].second = cats[i].second;
+					++count;
+					cout<<" "<<cats[i].first;
+				}
+				if(cats[i].first == "XP"){
+					categories[count].first = cats[i].first;
+					categories[count].second = cats[i].second;
+					++count;
+					cout<<"   "<<cats[i].first;
 				}
 			}
 			cout<<"\n";
@@ -604,7 +663,7 @@ void add_player(Offense o, Defense d, Kicker k){
 		string last_name;
 		char odk;
 		start:
-			while((cout<<"Enter first name and last name of player, team defense, or kicker. Type 'Q Q' to quit\n") && (!(cin>>first_name) || !(cin>>last_name))){
+			while((cout<<"Enter first name and last name of player, team defense, or kicker. Type Q Q to quit\n") && (!(cin>>first_name) || !(cin>>last_name))){
 				cout<<"Invalid input!\n";
 				cin.clear();
 				cin.ignore(numeric_limits<streamsize>::max(), '\n');
